@@ -3,11 +3,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'reusable_card.dart';
 import 'identity_widget.dart';
+import 'constants.dart';
 
-const double heightContainer = 80.0;
-const activeCardColor = Color(0xFF1D1E33);
-const inactiveCardColor = Color(0xFF111328);
-const bottomContainerColor = Color(0xFFEB1555);
+enum Gender {
+  MALE,
+  FEMALE,
+}
 
 class InputPage extends StatefulWidget {
   @override
@@ -15,28 +16,8 @@ class InputPage extends StatefulWidget {
 }
 
 class _InputPageState extends State<InputPage> {
-  Color maleCardColor = inactiveCardColor;
-  Color femaleCardColor = inactiveCardColor;
-
-  //1 = male, 2 = female
-  void updateIconBackgroundColor(int gender) {
-    if (gender == 1) {
-      if (maleCardColor == inactiveCardColor) {
-        maleCardColor = activeCardColor;
-        femaleCardColor = inactiveCardColor;
-      } else {
-        maleCardColor = inactiveCardColor;
-      }
-    }
-    if (gender == 2) {
-      if (femaleCardColor == inactiveCardColor) {
-        femaleCardColor = activeCardColor;
-        maleCardColor = inactiveCardColor;
-      } else {
-        femaleCardColor = inactiveCardColor;
-      }
-    }
-  }
+  Gender selectedGender;
+  int height = 180;
 
   @override
   Widget build(BuildContext context) {
@@ -47,58 +28,108 @@ class _InputPageState extends State<InputPage> {
         ),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Expanded(
             child: Row(
               children: [
                 Expanded(
-                  child: GestureDetector(
-                    onTap: () {
+                  child: ReusableCard(
+                    onTapFunction: () {
                       setState(() {
-                        updateIconBackgroundColor(1);
+                        selectedGender = Gender.MALE;
                       });
                     },
-                    child: ReusableCard(
-                      colour: maleCardColor,
-                      childCard: IdentityWidget(
-                        identityIcon: FontAwesomeIcons.mars,
-                        identityText: 'MALE',
-                      ),
+                    colour: selectedGender == Gender.MALE
+                        ? kActiveCardColor
+                        : kInactiveCardColor,
+                    childCard: IdentityWidget(
+                      identityIcon: FontAwesomeIcons.mars,
+                      identityText: 'MALE',
                     ),
                   ),
                 ),
                 Expanded(
-                  child: GestureDetector(
-                    onTap: () {
+                  child: ReusableCard(
+                    onTapFunction: () {
                       setState(() {
-                        updateIconBackgroundColor(2);
+                        selectedGender = Gender.FEMALE;
                       });
                     },
-                    child: ReusableCard(
-                      colour: femaleCardColor,
-                      childCard: IdentityWidget(
-                        identityIcon: FontAwesomeIcons.venus,
-                        identityText: 'FEMALE',
-                      ),
+                    colour: selectedGender == Gender.FEMALE
+                        ? kActiveCardColor
+                        : kInactiveCardColor,
+                    childCard: IdentityWidget(
+                      identityIcon: FontAwesomeIcons.venus,
+                      identityText: 'FEMALE',
                     ),
                   ),
                 )
               ],
             ),
           ),
-          ReusableCard(colour: activeCardColor),
+          Expanded(
+            child: ReusableCard(
+              colour: kInactiveCardColor,
+              childCard: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'HEIGHT',
+                    style: kTextStyle,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: <Widget>[
+                      Text(
+                        height.toString(),
+                        style: kTextStyleHeavy,
+                      ),
+                      Text(
+                        'cm',
+                        style: kTextStyle,
+                      ),
+                    ],
+                  ),
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                        thumbColor: kPinkColor,
+                        overlayColor: Color(0x29EB1555),
+                        thumbShape:
+                            RoundSliderThumbShape(enabledThumbRadius: 15.0),
+                        overlayShape:
+                            RoundSliderOverlayShape(overlayRadius: 30),
+                        activeTrackColor: Colors.white,
+                        inactiveTrackColor: Color(0xFF8D8E87)),
+                    child: Slider(
+                      value: height.toDouble(),
+                      min: 120.0,
+                      max: 220.0,
+                      onChanged: (newValue) {
+                        setState(() {
+                          height = newValue.round();
+                        });
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
           Expanded(
             child: Row(
               children: [
-                ReusableCard(colour: activeCardColor),
-                ReusableCard(colour: activeCardColor),
+                Expanded(child: ReusableCard(colour: kInactiveCardColor)),
+                Expanded(child: ReusableCard(colour: kInactiveCardColor)),
               ],
             ),
           ),
           Container(
-            color: bottomContainerColor,
+            color: kPinkColor,
             width: double.infinity,
-            height: heightContainer,
+            height: kHeightContainer,
           ),
         ],
       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const textStyle = TextStyle(fontSize: 18.0, color: Color(0xFF8D8E98));
+import 'constants.dart';
 
 class IdentityWidget extends StatelessWidget {
   final IconData identityIcon;
@@ -19,7 +19,7 @@ class IdentityWidget extends StatelessWidget {
         ),
         Text(
           identityText,
-          style: textStyle,
+          style: kTextStyle,
         )
       ],
     );
